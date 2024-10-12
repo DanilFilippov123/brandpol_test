@@ -1,0 +1,14 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}
+    {{ test.name }}
+{% endblock %}
+
+{% block body %}
+
+    <h1>
+        <a href="{{ test.get_absolute_url }}">
+            {{ test.name }}
+        </a>
+    </h1>
+{% endblock %}
