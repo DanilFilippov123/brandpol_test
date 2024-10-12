@@ -1,0 +1,6 @@
+[tests]
+host=localhost
+user=postgres
+dbname=tests
+port=5432
+password=password
