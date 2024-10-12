@@ -21,6 +21,6 @@ from tests import urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tests/',
-         include('tests.urls',
+         include(('tests.urls', 'tests'),
                  namespace='tests')),
 ]
