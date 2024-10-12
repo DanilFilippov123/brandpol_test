@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 
 
 # Create your models here.
@@ -26,6 +27,9 @@ class TestModel(models.Model):
                               null=True,
                               related_name='tests',
                               verbose_name='Тема')
+
+    def get_absolute_url(self):
+        return reverse('tests:test', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'Тест'
