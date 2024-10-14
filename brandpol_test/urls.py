@@ -16,11 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from tests import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tests/',
-         include(('tests.urls', 'tests'),
-                 namespace='tests')),
+    path('tests/', include(('tests.urls', 'tests'), namespace='tests')),
+    path('user/', include(('user.urls', 'user'), namespace='user')),
+    path("user/", include("django.contrib.auth.urls")),
 ]

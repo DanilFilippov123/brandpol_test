@@ -10,5 +10,15 @@
         <a href="{{ test.get_absolute_url }}">
             {{ test.name }}
         </a>
+    <a href="{% url 'tests:run_test' pk=test.pk%}">
+        Запустить
+    </a>
     </h1>
+    <p>Попыток {{ history|length }}</p>
+
+    <ul>
+        {% for history_item in history %}
+            <li>{{ history_item }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

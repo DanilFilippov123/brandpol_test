@@ -1,0 +1,15 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}
+    {{ test.name }}
+{% endblock %}
+
+{% block body %}
+    {{ question.name }}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">следующий вопрос</button>
+    </form>
+
+{% endblock %}

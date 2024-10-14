@@ -6,6 +6,8 @@
         <h1>
             <a href="{{ test.get_absolute_url }}"> {{ test.name }} </a>
         </h1>
+    {% empty %}
+        Здесь пока пусто :(
     {% endfor %}
 
     {% if is_paginated %}

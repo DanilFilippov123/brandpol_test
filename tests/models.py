@@ -27,6 +27,8 @@ class TestModel(models.Model):
                               null=True,
                               related_name='tests',
                               verbose_name='Тема')
+    activated = models.BooleanField(default=False,
+                                    verbose_name='Активирован ли тест')
 
     def get_absolute_url(self):
         return reverse('tests:test', kwargs={'pk': self.pk})
@@ -49,6 +51,9 @@ class QuestionModel(models.Model):
                              null=False,
                              related_name='questions',
                              verbose_name='Тест')
+
+    activated = models.BooleanField(default=False,
+                                    verbose_name='Активирован ли вопрос')
 
     class Meta:
         verbose_name = 'Вопрос'
@@ -96,7 +101,7 @@ class UserTestHistoryModel(models.Model):
                                 verbose_name='Оценка')
 
     def __str__(self):
-        return f'{self.user} - {self.test}'
+        return f'{self.date.strftime("%d.%m.%Y")}: {self.score}'
 
     class Meta:
         verbose_name = 'Пройденный тест'
