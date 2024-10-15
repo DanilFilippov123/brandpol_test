@@ -16,8 +16,15 @@ class AdminVariantsInlineFormSet(BaseInlineFormSet):
             return
 
         q: QuestionModel = self.instance
-        curr_correct = q.variants.filter(is_correct=True).count()
-        all_variants = q.variants.count()
+
+        if q.pk is None:
+            # if quest just created then there is no variants
+            curr_correct = 0
+            all_variants = 0
+        else:
+            curr_correct = q.variants.filter(is_correct=True).count()
+            all_variants = q.variants.count()
+
         add_correct = 0
         form: ModelForm
         for form in self.forms:
