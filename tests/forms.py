@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.forms import BaseFormSet
 
 
 class CheckboxWidget(forms.CheckboxInput):
@@ -17,5 +19,15 @@ class VariantForm(forms.Form):
     pk = forms.IntegerField(widget=forms.HiddenInput())
 
 
-VariantsFormset = forms.formset_factory(VariantForm, extra=0)
-VariantsFormset.template_name_div = 'tests/variant_formset.html'
+class BaseVariantsFormset(BaseFormSet):
+    template_name_div = 'tests/variant_formset.html'
+
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+        if not any(form.cleaned_data['is_correct'] for form in self.forms):
+            raise ValidationError('Необходимо выбрать хотя бы один вариант')
+
+
+VariantsFormset = forms.formset_factory(VariantForm, extra=0, formset=BaseVariantsFormset)

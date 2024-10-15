@@ -8,7 +8,7 @@
     {{ question.name }}
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_div }}
         <button type="submit">следующий вопрос</button>
     </form>
 

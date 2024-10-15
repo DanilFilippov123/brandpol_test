@@ -2,3 +2,4 @@
 {% for form in formset %}
     {{ form.as_div }}
 {% endfor %}
+{{ formset.non_form_errors }}
