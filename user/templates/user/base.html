@@ -16,8 +16,12 @@
 
         </div>
         <div class="col-md-3 text-end">
+            <form method="post" action="{% url 'user_auth:logout' %}" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">Выход</button>
+            </form>
             <a href="{% url 'tests:all_tests' %}" class="btn btn-outline-primary mr-2">Список тестов</a>
-            <a href="{% url 'user_auth:logout' %}" class="btn btn-outline-danger">Выход</a>
+
         </div>
     </header>
 </div>

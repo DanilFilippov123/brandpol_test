@@ -26,23 +26,24 @@
                     {% endif %}
                     >Предыдущий вопрос
                     </a>
-                    <button type="submit"
-                            class="btn {% if current_question == question_count %}
-                             btn-disabled {% else %} btn-primary {% endif %} %}"
-                            id="next-button"
-                            form="quizForm"
-                            {% if current_question == question_count %} disabled {% endif %}
-                    >Следующий вопрос
-                    </button>
-                </div>
-                {% if current_question == question_count %}
-                    <div class="text-center mt-4">
+                    {% if current_question == question_count|add:-1 %}
                         <button type="submit"
-                                class="btn btn-success btn-lg"
-                                id="submit-button">Завершить тест
+                                form="quizForm"
+                                class="btn btn-success "
+                                id="next-button"
+                        >Завершить тест
                         </button>
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <button type="submit"
+                                class="btn {% if current_question == question_count %}
+                             btn-disabled {% else %} btn-primary {% endif %} "
+                                id="next-button"
+                                form="quizForm"
+                                {% if current_question == question_count %} disabled {% endif %}
+                        >Следующий вопрос
+                        </button>
+                    {% endif %}
+                </div>
             </div>
             <div class="col-md-3 bg-light p-4">
                 <h4 class="mb-3">Questions</h4>

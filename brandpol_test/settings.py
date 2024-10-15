@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "^bua&6(tbb7@x)yi9$w5s+wozk0mw5tkd114-mcu%##8t)zbht"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,10 +80,8 @@ WSGI_APPLICATION = 'brandpol_test.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "OPTIONS": {
-            "service": "tests",
-        },
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 # Password validation
@@ -106,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGIN_REDIRECT_URL = reverse_lazy('user:user_account')
 LOGIN_URL = reverse_lazy('user_auth:login')
+LOGOUT_REDIRECT_URL = LOGIN_URL
 
 
 # Internationalization
