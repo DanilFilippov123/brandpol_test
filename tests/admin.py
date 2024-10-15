@@ -59,8 +59,9 @@ class VariantInline(admin.StackedInline):
     formset = AdminVariantsInlineFormSet
 
 
-class QuestionInline(admin.TabularInline):
+class QuestionInline(admin.StackedInline):
     model = QuestionModel
+    fields = ['name']
     show_change_link = True
 
     verbose_name = 'Вопрос'
