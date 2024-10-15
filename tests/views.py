@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, FormView
 
@@ -40,8 +40,9 @@ class RunTestRedirectView(LoginRequiredMixin, RedirectView):
             "pk": test.pk,
             "name": test.name,
             "theme": test.theme.name,
-            "question_count": test.questions.count(),
+            "question_count": test.questions.filter(activated=True).count(),
             "questions": [{
+                "pk": q.pk,
                 "name": q.name,
                 "answers": dict(),
                 "variants": {v.pk: {
@@ -72,6 +73,7 @@ class QuestionView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
 
         context['question'] = self.quest
+        context['questions'] = self.test['questions']
         context['test'] = self.test
         context['question_count'] = self.test['question_count']
         context['current_question'] = self.current_question_number
@@ -82,7 +84,7 @@ class QuestionView(LoginRequiredMixin, FormView):
         if self.request.method == 'GET':
             return [{
                 'name': variant['name'],
-                'is_correct': False,
+                'is_correct': self.quest['answers'][pk] if pk in self.quest['answers'] else False,
                 'pk': pk
             } for pk, variant in self.quest['variants'].items()]
         else:
@@ -90,7 +92,13 @@ class QuestionView(LoginRequiredMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.test = self.request.session['current_test']
+
+        if self.test is None:
+            return redirect('tests:test', pk=kwargs['pk'])
+
         self.current_question_number = int(kwargs['question_number'])
+        if not (0 <= self.current_question_number < len(self.test['questions'])):
+            pass
         self.quest = self.test['questions'][self.current_question_number]
 
         if (self.test['pk'] != kwargs['pk'] or
@@ -121,27 +129,35 @@ class QuestionView(LoginRequiredMixin, FormView):
 
 class ResultView(LoginRequiredMixin, TemplateView):
     template_name = "tests/result.html"
+    test = {}
 
     def check_result(self):
 
-        test = self.request.session['current_test']
+        self.test = self.request.session['current_test']
 
-        count_of_correct_answers = len(test['questions'])
+        count_of_correct_answers = len(self.test['questions'])
         count_of_user_correct_answers = 0
 
-        for quest in test['questions']:
-            if all(quest['answers'][pk] == variant['is_correct'] for pk, variant in quest['variants'].items()):
+        for quest in self.test['questions']:
+            if all(quest['answers'].get(pk, False) == variant['is_correct']
+                   for pk, variant in quest['variants'].items()):
                 count_of_user_correct_answers += 1
 
-        return count_of_user_correct_answers / count_of_correct_answers
+        return round(count_of_user_correct_answers / count_of_correct_answers * 100)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['result'] = self.check_result()
+        context['test'] = self.test
+
+        context['best'] = UserTestHistoryModel.objects.filter(
+            test_id=self.test['pk'],
+            user=self.request.user
+        ).order_by('-score')[:5]
 
         UserTestHistoryModel.objects.create(
             user=self.request.user,
-            test_id=self.request.session['current_test']['pk'],
+            test_id=self.test['pk'],
             score=context['result']
         )
 

@@ -15,7 +15,10 @@ class VariantForm(forms.Form):
     template_name_div = 'tests/variant_form.html'
 
     is_correct = forms.BooleanField(initial=False, widget=CheckboxWidget(), required=False)
-    name = forms.CharField(max_length=255, widget=ReadOnlyTextInput())
+    name = forms.CharField(max_length=255,
+                           widget=ReadOnlyTextInput(),
+                           required=False,
+                           initial='')
     pk = forms.IntegerField(widget=forms.HiddenInput())
 
 

@@ -1,4 +1,11 @@
-<input type="hidden" 
-       name="{{ widget.name }}" 
-       value="{{ widget.value|stringformat:'s' }}">
-{{ widget.value }}
+{#<input type="hidden" #}
+{#       name="{{ widget.name }}" #}
+{#       value="{{ widget.value|stringformat:'s' }}">#}
+{#<label#}
+{#        class="form-check-label">#}
+{#                {{ widget.value }}#}
+{#</label>#}
+
+<label class="custom-control-label">
+    <span class="answer-text">{{ widget.value }}</span>
+</label>

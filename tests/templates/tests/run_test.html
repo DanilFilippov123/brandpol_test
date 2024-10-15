@@ -5,11 +5,77 @@
 {% endblock %}
 
 {% block body %}
-    {{ question.name }}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_div }}
-        <button type="submit">следующий вопрос</button>
-    </form>
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <div class="col-md-9 d-flex flex-column justify-content-between p-4">
+                <div class="text-center mb-4">
+                    <h2>{{ question.name }}</h2>
+                </div>
+                <form id="quizForm" class="mb-4" method="post">
+                    {% csrf_token %}
+                    {{ form.as_div }}
+                </form>
+                <div class="navigation-buttons">
+                    <a class="btn {% if current_question == 0 %}
+                             btn-disabled {% else %} btn-secondary {% endif %} %}"
+                       id="prev-button"{% if current_question == 0 %} disabled
 
+                    {% else %}
+                       href="{% url 'tests:question' test.pk current_question|add:-1 %}"
+
+                    {% endif %}
+                    >Предыдущий вопрос
+                    </a>
+                    <button type="submit"
+                            class="btn {% if current_question == question_count %}
+                             btn-disabled {% else %} btn-primary {% endif %} %}"
+                            id="next-button"
+                            form="quizForm"
+                            {% if current_question == question_count %} disabled {% endif %}
+                    >Следующий вопрос
+                    </button>
+                </div>
+                {% if current_question == question_count %}
+                    <div class="text-center mt-4">
+                        <button type="submit"
+                                class="btn btn-success btn-lg"
+                                id="submit-button">Завершить тест
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-3 bg-light p-4">
+                <h4 class="mb-3">Questions</h4>
+                <div class="question-list mb-4">
+                    <ol class="list-group list-group-numbered">
+                        {% for q in questions %}
+                            <li class="list-group-item {% if q.pk == question.pk %}active{% endif %}">
+                                {{ q.name }}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // Form validation
+        document.getElementById('quizForm').addEventListener('submit', function (event) {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                event.preventDefault();
+                alert('Выберите хотя бы один вариант ответа!');
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('.answer-option')) {
+                const checkbox = event.target.closest('.answer-option').querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    </script>
 {% endblock %}

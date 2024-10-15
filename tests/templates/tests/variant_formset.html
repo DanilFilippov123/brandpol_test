@@ -1,5 +1,13 @@
+
+
 {{ formset.management_form }}
+
 {% for form in formset %}
-    {{ form.as_div }}
+    <div class="answer-option">
+        <div class="custom-control custom-checkbox">
+            {{ form.as_div }}
+        </div>
+    </div>
+
 {% endfor %}
 {{ formset.non_form_errors }}

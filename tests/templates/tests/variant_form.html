@@ -1,6 +1,5 @@
-<div>
-    {{ errors }}
-    {% for field in hidden_fields %}{{ field }}{% endfor %}
-    {{ form.is_correct }}
-    {{ form.name }}
-</div>
+{{ errors }}
+{% for field in hidden_fields %}{{ field }}{% endfor %}
+
+{{ form.is_correct }}
+{{ form.name }}

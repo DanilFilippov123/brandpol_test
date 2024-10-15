@@ -2,5 +2,42 @@
 
 {% block body %}
 
-    <h1>Личный кабинет</h1>
+    <main class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ user.username }}</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Имя {{ user.first_name }}</li>
+                        <li class="list-group-item">Email {{ user.email }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Пройти тест</h3>
+                </div>
+                <div class="card-body">
+                    <p>Недавно пройденные тесты.</p>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="#">Название теста 1</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#">Название теста 2</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#">Название теста 3</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}
