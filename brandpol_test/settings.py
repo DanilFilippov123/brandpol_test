@@ -105,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_REDIRECT_URL = reverse_lazy('user:user_account')
+LOGIN_URL = reverse_lazy('user_auth:login')
 
 
 # Internationalization
