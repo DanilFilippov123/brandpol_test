@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, FormView
 
 from tests.forms import VariantsFormset
-from tests.models import TestModel, UserTestHistoryModel
+from tests.models import TestModel, UserTestHistoryModel, ThemeModel
 
 
 # Create your views here.
@@ -16,7 +16,21 @@ class TestListView(ListView):
     context_object_name = 'tests_list'
     paginate_by = 10
 
-    queryset = TestModel.objects.filter(activated=True)
+    queryset = TestModel.objects.filter(activated=True).order_by('pk')
+
+    def get_queryset(self):
+        theme = self.request.GET.get('theme')
+        if theme is not None:
+            if theme == '__all__':
+                self.queryset = TestModel.objects.all()
+            else:
+                self.queryset = TestModel.objects.filter(theme_id=int(theme))
+        return self.queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['themes'] = ThemeModel.objects.all()
+        return context
 
 
 class TestDetailView(LoginRequiredMixin, DetailView):
@@ -26,7 +40,7 @@ class TestDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['history'] = UserTestHistoryModel.objects.filter(user=self.request.user,
+        context['user_history'] = UserTestHistoryModel.objects.filter(user=self.request.user,
                                                                  test=self.object)
         return context
 
@@ -36,6 +50,8 @@ class RunTestRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         test = get_object_or_404(TestModel, pk=kwargs['pk'])
+        if test.questions.count() == 0:
+            return reverse('tests:test', kwargs={'pk': test.pk})
         self.request.session["current_test"] = {
             "pk": test.pk,
             "name": test.name,
