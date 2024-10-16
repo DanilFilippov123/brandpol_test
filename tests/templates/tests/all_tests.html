@@ -2,32 +2,91 @@
 
 {% block body %}
 
-    {% for test in tests_list %}
-        <h1>
-            <a href="{{ test.get_absolute_url }}"> {{ test.name }} </a>
-        </h1>
-    {% empty %}
-        Здесь пока пусто :(
-    {% endfor %}
+    <header class="bg-success text-white text-center py-3">
+        <h1>Тесты для саморазвития</h1>
+        <p>Выберите тест и проверьте свои знания!</p>
+    </header>
 
-    {% if is_paginated %}
-        <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
+    <div class="container mt-4">
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+        <div class="row mb-4">
+            <form method="get">
+                <div class="col-md-6">
+                    <label for="categoryFilter" class="form-label">Выбор темы</label>
+                    <select name="theme" class="form-select" id="categoryFilter">
+                        <option value="__all__">Все темы</option>
+                        {% for theme in themes %}
+                            <option value="{{ theme.id }}">{{ theme.name }}</option>
+                        {% endfor %}
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+                    </select>
+                    <button type="submit"
+                            class="mt-2 btn btn-success"
+                            id="next-button"
+                    >Выбрать
+                    </button>
+                </div>
+            </form>
         </div>
-    {% endif %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="mb-4">Доступные тесты</h2>
+                <div class="list-group">
+
+
+                    {% for test in tests_list %}
+                        <a href="{{ test.get_absolute_url }}" class="list-group-item list-group-item-action">
+                            <h5 class="mb-1">{{ test.name }}: {{ test.theme.name }}</h5>
+                            {% if test.description %}
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            {{ test.description }}
+                                        </p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </a>
+                    {% empty %}
+                        Здесь пока пусто :(
+                    {% endfor %}
+
+                    {% if is_paginated %}
+                        <div class="container mt-5">
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    <li class="page-item active" aria-current="page">
+                                        <span class="page-link">{{ page_obj.number }}</span>
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
 
 {% endblock %}
