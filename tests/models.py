@@ -22,6 +22,9 @@ class TestModel(models.Model):
                             blank=False,
                             null=False,
                             verbose_name='Название теста')
+    description = models.TextField(blank=True,
+                                   null=True,
+                                   verbose_name='Описание теста')
     theme = models.ForeignKey(ThemeModel,
                               on_delete=models.SET_NULL,
                               null=True,
@@ -32,6 +35,14 @@ class TestModel(models.Model):
 
     def get_absolute_url(self):
         return reverse('tests:test', kwargs={'pk': self.pk})
+
+    def mean_score(self):
+        avg = UserTestHistoryModel.objects.filter(
+            test_id=self.pk
+        ).aggregate(models.Avg('score'))['score__avg']
+        if avg is None:
+            return
+        return round(avg, 2)
 
     class Meta:
         verbose_name = 'Тест'
